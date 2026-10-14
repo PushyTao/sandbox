@@ -45,6 +45,8 @@ Linux 环境如果只有 `python3`，将上面命令中的 `python` 换成 `pyth
 
 ## 设计与后续工作
 
+- [团队任务与集成计划](docs/superpowers/plans/2026-10-14-team-m0.md)：PUSH-2 的真实负责人、依赖、验收和提交保留规则。
+- [历史恢复与本轮验证](docs/validation/push-2-integration-2026-10-14.md)：保留 PUSH-1 七个提交，并与用户已有 main 历史集成。
 - [M0 范围与待决项](docs/decisions/0001-m0-scope.md)：D1–D7 均待确认；记录审批信任、Git 授权优先级、运行时和审计缺口。
 - [验收矩阵](docs/validation/acceptance-matrix.md)：把实际观察与设计验收项分开，保留未覆盖场景。
 - [固定上游资料与路线比较](docs/validation/upstream-references.md)：记录核查日期、提交和许可证来源；未完成 runtime 的本地集成比较。
