@@ -1,0 +1,6 @@
+/target/
+/.local/
+/.superpowers/
+__pycache__/
+*.py[cod]
+.venv/
