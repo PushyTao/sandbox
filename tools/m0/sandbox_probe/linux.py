@@ -259,6 +259,20 @@ def _process_start(pid):
         return None
 
 
+def _await_descendants(identities, timeout):
+    """Foreground wait for the exact observed processes, including reaping.
+
+    Start times prevent a reused PID being mistaken for our synthetic child.
+    No process other than the launcher is signalled. The fixed child has a
+    six-second lifetime; exceeding this wait is an explicit cleanup failure.
+    """
+    deadline = time.monotonic() + timeout
+    while any(_process_start(pid) == started for pid, started in identities.items()):
+        if time.monotonic() >= deadline:
+            raise RuntimeError("synthetic descendant cleanup could not be confirmed")
+        time.sleep(.01)
+
+
 _LIFECYCLE_SCRIPT = r'''
 import os, pathlib, time
 work = pathlib.Path('/workspace')
@@ -280,14 +294,26 @@ def _lifecycle(plan, workspace):
                                stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
                                stderr=subprocess.DEVNULL, close_fds=True,
                                env={"PATH": "/usr/bin:/bin"})
+    observed = {}
+    details = {}
+
+    def track():
+        for pid in _children(process.pid):
+            started = _process_start(pid)
+            if started is not None:
+                observed[pid] = started
+
     try:
+        track()
         deadline = time.monotonic() + 3
         marker = workspace / "child-ready"
         while not marker.exists() and time.monotonic() < deadline and process.poll() is None:
+            track()
             time.sleep(.01)
         if not marker.exists():
             raise RuntimeError("detached child did not reach ready state")
         inner_pid = int(marker.read_text())
+        track()
         candidates = []
         for pid in _children(process.pid):
             try:
@@ -309,15 +335,21 @@ def _lifecycle(plan, workspace):
         while _process_start(child_pid) == identity and time.monotonic() < deadline:
             time.sleep(.01)
         reaped = _process_start(child_pid) != identity
-        return returncode == 0 and reaped, {"root_exit_code": returncode,
+        details.update({"root_exit_code": returncode,
                 "detached_child_observed_alive": True, "detached_child_reaped": reaped,
-                "supervisor_crash_tested": False}
+                "supervisor_crash_tested": False})
+        # Preserve the original one-second observation, even if fallback
+        # collection below later succeeds at the child's six-second expiry.
+        return returncode == 0 and reaped, details
     finally:
-        if process.poll() is None:
-            process.kill()
+        try:
+            track()
+        finally:
+            if process.poll() is None:
+                process.kill()
             process.wait(timeout=3)
-        # The synthetic descendant self-expires at six seconds even if the
-        # experimental namespace cleanup fails; no arbitrary process is killed.
+            _await_descendants(observed, timeout=7)
+            details["observed_descendants_collected_before_return"] = True
 
 
 def probe():

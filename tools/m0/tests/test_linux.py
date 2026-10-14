@@ -1,8 +1,11 @@
 import os
+import subprocess
 import sys
+import tempfile
+import threading
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from sandbox_probe import linux
@@ -43,6 +46,35 @@ class LinuxProbeTests(unittest.TestCase):
 
     @unittest.skipUnless(sys.platform == "linux" and os.environ.get("SBX_M0_INTEGRATION") == "1",
                          "opt-in real Linux test; no platform guarantee from a skip")
+    def test_lifecycle_setup_failure_collects_observed_child_before_return(self):
+        # Inject a launcher that exited before readiness, while a real bounded
+        # child remains. A separate reaper owns wait(), just as PID 1 does for
+        # descendants of a real namespace launcher.
+        child = subprocess.Popen([sys.executable, "-I", "-c",
+            "import time; print('ready', flush=True); time.sleep(.4)"], stdout=subprocess.PIPE)
+        reaper = threading.Thread(target=child.wait)
+        try:
+            self.assertEqual(child.stdout.readline().strip(), b"ready")
+            self.assertIsNone(child.poll())
+            reaper.start()
+            launcher = Mock(pid=os.getpid())
+            launcher.poll.return_value = 0
+            with tempfile.TemporaryDirectory() as temporary, patch.object(
+                    linux.subprocess, "Popen", return_value=launcher):
+                with self.assertRaisesRegex(RuntimeError, "ready"):
+                    linux._lifecycle([], Path(temporary))
+            self.assertIsNotNone(child.poll(), "probe returned while its observed synthetic child was alive")
+            launcher.kill.assert_not_called()
+        finally:
+            if child.poll() is None:
+                child.terminate()
+            child.wait(timeout=3)
+            if reaper.ident is not None:
+                reaper.join(timeout=3)
+            child.stdout.close()
+
+    @unittest.skipUnless(sys.platform == "linux" and os.environ.get("SBX_M0_INTEGRATION") == "1",
+                         "opt-in real Linux test; no platform guarantee from a skip")
     def test_probe_output_is_bounded_during_collection(self):
         with self.assertRaisesRegex(RuntimeError, "oversized"):
             linux._run(["/usr/bin/env"], "import time; print('x' * 20000, flush=True); time.sleep(30)")
@@ -55,8 +87,9 @@ class LinuxProbeTests(unittest.TestCase):
         self.assertEqual(results["FS-1.workspace"].status, "pass")
         self.assertEqual(results["FS-2.symlink"].status, "pass")
         self.assertEqual(results["FS-3.existing"].status, "pass")
-        self.assertEqual(results["NET-1.ipv4-tcp"].status, "pass")
-        self.assertEqual(results["NET-1.abstract-unix"].status, "pass")
+        for identifier in ("ENV.private", "NET-1.ipv4-tcp", "NET-1.ipv4-udp",
+                           "NET-1.ipv6-tcp", "NET-1.ipv6-udp", "NET-1.abstract-unix"):
+            self.assertEqual(results[identifier].status, "pass", identifier)
         self.assertEqual(results["PR-1.root-exit"].status, "pass")
         # These intentional counterexamples block this candidate, rather than
         # treating a ro-bind mount as the design's complete policy compiler.
