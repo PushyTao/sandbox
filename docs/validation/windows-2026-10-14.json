@@ -1,0 +1,58 @@
+{
+  "observations": [
+    {
+      "details": {
+        "assigned_before_resume": true,
+        "pid": 34188,
+        "running_before_close": true,
+        "terminated_after_close": true
+      },
+      "id": "windows.job_lifecycle",
+      "status": "pass",
+      "summary": "Fixed synthetic child ran after Job assignment and terminated on Job close."
+    },
+    {
+      "details": {},
+      "id": "windows.filesystem",
+      "status": "unverified",
+      "summary": "No ACL or filesystem isolation is installed or tested."
+    },
+    {
+      "details": {},
+      "id": "windows.token",
+      "status": "unverified",
+      "summary": "Child uses the current identity; restricted tokens are not tested."
+    },
+    {
+      "details": {},
+      "id": "windows.network",
+      "status": "unverified",
+      "summary": "No network deny policy is installed or tested."
+    },
+    {
+      "details": {},
+      "id": "windows.ipc",
+      "status": "unverified",
+      "summary": "No host IPC isolation is installed or tested."
+    },
+    {
+      "details": {},
+      "id": "windows.descendants",
+      "status": "unverified",
+      "summary": "Descendant containment, host-agent escape and supervisor crash are not tested."
+    }
+  ],
+  "platform": {
+    "machine": "AMD64",
+    "release": "10",
+    "sys_platform": "win32",
+    "system": "Windows",
+    "version": "10.0.26100",
+    "wsl": {
+      "detected": false
+    }
+  },
+  "production_ready": false,
+  "python_version": "3.8.5",
+  "schema_version": "1.0"
+}

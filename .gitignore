@@ -4,3 +4,4 @@
 __pycache__/
 *.py[cod]
 .venv/
+/tools/m0/m0-report.json
