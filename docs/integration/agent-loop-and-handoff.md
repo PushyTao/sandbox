@@ -26,6 +26,17 @@
 
 网络 deny 应测 IPv4/IPv6、TCP/UDP、DNS/代理及平台 IPC；整树清理、文件别名和未来保护名称沿用安全团队验收，不能只靠网关单元测试。Windows、Linux、macOS 各单独记录 OS/架构/后端版本与证据；WSL 不计原生 Windows。
 
+固定测试脚本可在合成工作区写成 `check_answer.py`（由可信测试准备阶段提供），其内容如下；服务的 argv 使用运行时清单解析后的 Python 路径与 `check_answer.py` 两项，不假定各系统都有同一 `python` 命令。夹具中的 `fixture-tool` 只是该固定负载的标签，不是已提供的可执行文件。
+
+```python
+from pathlib import Path
+ok = Path('answer.txt').read_bytes() == b'right\n'
+print('PASS' if ok else 'FAIL')
+raise SystemExit(0 if ok else 1)
+```
+
+预期初次退出 1/stdout 为 `FAIL\n`（实际换行字节按平台记录），补丁后退出 0/stdout 为 `PASS\n`；空 stderr 不能伪造一条输出事件。写/patch 比较原字节哈希，不做 CRLF/LF 自动等价转换。这个脚本仅规定最小工作负载，后端尚未就绪时不得在宿主执行它并计为集成通过。
+
 ## 依赖与责任
 
 | 未满足依赖 | 协调方 | 解除条件 |

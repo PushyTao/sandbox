@@ -23,7 +23,7 @@ def validate(document):
     require(required <= cases.keys(), 'missing required case')
     frame_count = 0
     for name, case in cases.items():
-        pending, seqs, terminals, accepted, retained = {}, {}, set(), set(), {}
+        pending, seqs, terminals, accepted, retained = {}, {}, set(), {}, {}
         require(case['precondition'], name + ': missing precondition')
         for frame in case['frames']:
             frame_count += 1
@@ -43,7 +43,10 @@ def validate(document):
                 if 'error' in msg:
                     require(isinstance(msg['error']['code'], int) and msg['error']['data']['kind'], name + ': error')
                 elif request['method'] == 'exec.start':
-                    accepted.add(msg['result']['execId'])
+                    key = msg['result']['execId']
+                    session = request['params']['sessionId']
+                    require(key not in accepted or accepted[key] == session, name + ': exec session changed')
+                    accepted[key] = session
             else:
                 require('method' in msg and 'result' not in msg and 'error' not in msg, name + ': event')
                 if msg['method'] not in ('exec.output', 'exec.completed'):
@@ -51,6 +54,7 @@ def validate(document):
                 params = msg['params']
                 key = params['execId']
                 require(key in accepted, name + ': event before acceptance')
+                require(params['sessionId'] == accepted[key], name + ': event session mismatch')
                 require(key not in terminals, name + ': event after terminal')
                 require(params['seq'] == seqs.get(key, 0) + 1, name + ': sequence')
                 seqs[key] = params['seq']
@@ -64,14 +68,34 @@ def validate(document):
                 else:
                     require(params['outcome'] in ('exited', 'cancelled', 'timed_out', 'setup_failed'), name + ': outcome')
                     require(isinstance(params['cleanup']['complete'], bool), name + ': cleanup')
+                    require(type(params['droppedBytes']) is int and params['droppedBytes'] >= 0, name + ': dropped bytes')
                     require(params['outputTruncated'] == (params['droppedBytes'] > 0), name + ': truncation')
                     terminals.add(key)
         require(not pending, name + ': unanswered request')
         if name != 'disconnect_cleanup':
-            require(accepted == terminals, name + ': missing terminal')
+            require(accepted.keys() == terminals, name + ': missing terminal')
 
     def messages(name):
         return [frame['message'] for frame in cases[name]['frames']]
+
+    for name, code, kind in (
+            ('version_mismatch', -32001, 'VersionMismatch'),
+            ('capability_missing', -32002, 'UnsupportedCapability'),
+            ('self_approval_denied', -32003, 'PermissionDenied'),
+            ('file_conflict', -32006, 'FileConflict')):
+        responses = [msg for msg in messages(name) if 'id' in msg and 'method' not in msg]
+        require(len(responses) == 1, name + ': refusal response count')
+        error = responses[0].get('error', {})
+        require(error.get('code') == code and error.get('data', {}).get('kind') == kind, name + ': required refusal')
+    negotiated = messages('initialize')[-1]['result']['protocolVersion']
+    require(negotiated == document['contractVersion'], 'initialize negotiated version')
+    require(messages('capability_missing')[-1]['error']['data']['missing'], 'missing capability list')
+
+    for name, outcome, exit_code in (
+            ('success', 'exited', 0), ('nonzero_exit', 'exited', 7),
+            ('timeout', 'timed_out', None), ('empty_output', 'exited', 0)):
+        terminal = messages(name)[-1]['params']
+        require(terminal['outcome'] == outcome and terminal['exitCode'] == exit_code, name + ': expected terminal')
 
     duplicate = messages('duplicate_submit')
     require(duplicate[0]['params'] == duplicate[2]['params'], 'dedupe must use identical request')
