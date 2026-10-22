@@ -1,0 +1,25 @@
+{
+  "timestamp_utc": "2026-10-22T09:27:47.945424+00:00",
+  "source_commit": "c19b23585d64d20869adb9654cfbc1f013584d40",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "machine": "AMD64",
+  "python": "3.8.5 (tags/v3.8.5:580fbb0, Jul 20 2020, 15:57:54) [MSC v.1924 64 bit (AMD64)]",
+  "elevated": false,
+  "git": "git version 2.54.0.windows.1",
+  "SBX_M0_INTEGRATION": "0",
+  "production_ready": false,
+  "commands": [
+    {
+      "command": "python -m unittest discover -s tools/m0/tests -v",
+      "cwd": ".",
+      "exit_code": 0,
+      "log": "windows-unittest.log"
+    },
+    {
+      "command": "python -m sandbox_probe --output ../../docs/build/evidence/2026-10-22/windows-probe.json",
+      "cwd": "tools/m0",
+      "exit_code": 2,
+      "log": "windows-probe.log"
+    }
+  ]
+}
