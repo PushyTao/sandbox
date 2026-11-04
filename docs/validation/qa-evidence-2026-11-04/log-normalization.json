@@ -1,0 +1,30 @@
+{
+  "utc": "2026-11-04T06:38:49.910531+00:00",
+  "transformation": "Early collector CRCRLF -> LF only; no content/result changes",
+  "files": [
+    {
+      "path": "windows-py38/probe.stdout.txt",
+      "before_sha256": "b72461223e695d9e9e14a8b1991443f9a3d4e3b0c367ab6bf223c34f7d633eb2",
+      "after_sha256": "0ab32ec8ac17e5575affdd72a7c37c910b9e0f7244ef09e3cb313f31b3cd538e",
+      "crcrlf_count": 58
+    },
+    {
+      "path": "windows-py38/unit-default.stderr.txt",
+      "before_sha256": "c9dd97d80377691ae3ccd6b29e14c6fae396c7c5f869810c7fb7811696bc0476",
+      "after_sha256": "a6cd3f143230882a3e50863e1682610b561fb6b256e3f635c08466450a4f33ce",
+      "crcrlf_count": 31
+    },
+    {
+      "path": "windows-py312/probe.stdout.txt",
+      "before_sha256": "0ff37a7f049f5aa918fb2fc0f0a593c62614c81f8c6b213cab1197d1ab421e37",
+      "after_sha256": "4f98c010339018e4da9eab084a756a9b410077e527dea538efd33e67ad99ea9c",
+      "crcrlf_count": 58
+    },
+    {
+      "path": "windows-py312/unit-default.stderr.txt",
+      "before_sha256": "9085649f27c782cf52353cc822b5af60bfca827b42680ee542130a7411aa12b3",
+      "after_sha256": "f120d13338c372b285406c5c0ff281c05f9850e51700859d29c5ea5ccd9bae32",
+      "crcrlf_count": 31
+    }
+  ]
+}

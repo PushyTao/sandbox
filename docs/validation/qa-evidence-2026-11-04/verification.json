@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "windows-py38: counts, exit codes, JSON, hashes, clean source and scratch pass",
+    "windows-py312: counts, exit codes, JSON, hashes, clean source and scratch pass",
+    "windows-capture-final: counts, exit codes, JSON, hashes, clean source and scratch pass",
+    "wsl-ubuntu: counts, exit codes, JSON, hashes, clean source and scratch pass",
+    "Both API fault-injection captures: 3 assertions pass, no scratch remains",
+    "12 distinct design rows; 9 end-to-end design steps present",
+    "QA scripts parse under Python 3.8.5"
+  ],
+  "baseline": "c19b23585d64d20869adb9654cfbc1f013584d40",
+  "status": "pass"
+}
