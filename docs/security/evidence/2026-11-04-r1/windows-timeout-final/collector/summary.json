@@ -1,0 +1,88 @@
+{
+  "collector_exit_code": 1,
+  "euid": null,
+  "machine": "AMD64",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "production_ready": false,
+  "python": "3.8.5",
+  "review_tool_sha256": {
+    "bounded_process.py": "20e129f3af91ab25dad07e5b2244eaf8026475577eafe3a92e453fedb747dcda",
+    "collect_review.py": "3e63c707ded248273267aa0d6b2a9d833d856de81c65a78e6905d203fd2c0588",
+    "test_collector_guard.py": "16e8a6bd04c926e1fd8a2dadfd4362e483d3c3ce44e3ed009b872a5f2a4e28f2",
+    "test_collector_timeout.py": "7725acf32a19f119a6ba6df37081e9e9242efc311cc2d36b0332243f773b77fb",
+    "test_m0_review.py": "2c3f90eff7a558c9464743c5b1062f9d361e50d8853bfd9b4e46c3b3e557840f"
+  },
+  "runs": [
+    {
+      "cleanup": {
+        "active_after_cleanup": 0,
+        "active_before_cleanup": 1,
+        "assigned_before_resume": true,
+        "complete": true,
+        "configured_before_create": true,
+        "errors": [],
+        "process_handles": [
+          {
+            "exit_confirmed": true,
+            "pid": 27780
+          },
+          {
+            "exit_confirmed": true,
+            "pid": 15364
+          }
+        ],
+        "scope": "outer-windows-job"
+      },
+      "elapsed_seconds": 0.328,
+      "error": null,
+      "exit_code": 0,
+      "name": "baseline-tests",
+      "timed_out": false,
+      "timeout_seconds": 60
+    },
+    {
+      "cleanup": {
+        "active_after_cleanup": 0,
+        "active_before_cleanup": 3,
+        "assigned_before_resume": true,
+        "complete": true,
+        "configured_before_create": true,
+        "errors": [],
+        "process_handles": [
+          {
+            "exit_confirmed": true,
+            "pid": 6796
+          },
+          {
+            "exit_confirmed": true,
+            "pid": 47600
+          },
+          {
+            "exit_confirmed": true,
+            "pid": 47016
+          }
+        ],
+        "scope": "outer-windows-job"
+      },
+      "elapsed_seconds": 60.016,
+      "error": null,
+      "exit_code": 1,
+      "name": "security-tests",
+      "timed_out": true,
+      "timeout_seconds": 60
+    }
+  ],
+  "scratch_location": "<evidence>",
+  "source_sha256": {
+    "tools/m0/sandbox_probe/__init__.py": "69d446dcc62db37360d904393ceaa2b51a35c1808dc7fc6880e40748d0ae8bfc",
+    "tools/m0/sandbox_probe/__main__.py": "199b2f0042eca1473474459af0602241e7e49839c888dc03fb1485ce383e960e",
+    "tools/m0/sandbox_probe/linux.py": "acc46e097e7ac9fa4c1be1bea77d4897b4e13cf32b349ee428e819cde5ebc892",
+    "tools/m0/sandbox_probe/report.py": "6efbfde5d42e582c6a3515aeb1808f55c9e2075fa4b154bada4bbf1f0fd0bdb2",
+    "tools/m0/sandbox_probe/windows.py": "7616e837be5cd5666e0efeb6a61af1ed066c8f8162435d47a1eed64ca2a388fa",
+    "tools/m0/tests/test_linux.py": "50bcb86d037cfc32ccff30ac374877f78248a95dd9fb23ce2cb8f1d7ab8d1672",
+    "tools/m0/tests/test_report.py": "1d4f236e58fd14b2ca66c58f830c305455ee19fd6f793a5f34585980abe171e8",
+    "tools/m0/tests/test_windows.py": "645ac2df478d02f0561f261a445a26d2fc49ccece3c040dfe44608669b048284"
+  },
+  "sys_platform": "win32",
+  "temporary_fixture_removed": true
+}

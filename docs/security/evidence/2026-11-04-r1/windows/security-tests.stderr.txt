@@ -1,0 +1,12 @@
+test_existing_name_scan_does_not_reserve_future_name (__main__.FilesystemCounterexamples) ... ok
+test_hardlink_bypasses_name_filter_and_copy_can_disclose_content (__main__.FilesystemCounterexamples) ... ok
+test_resolved_path_does_not_pin_parent_identity (__main__.FilesystemCounterexamples) ... ok
+test_cli_rejects_workload_workspace_and_platform_overrides (__main__.PublicBoundaryTests) ... ok
+test_directory_symlink_cleanup_preserves_external_synthetic_sentinel (__main__.TemporaryCleanupTests) ... ok
+test_assignment_failure_never_resumes_and_reaps_exact_process (__main__.WindowsInitializationFailures) ... ok
+test_job_configuration_failure_never_creates_process (__main__.WindowsInitializationFailures) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.035s
+
+OK

@@ -7,9 +7,10 @@ import json
 import os
 from pathlib import Path
 import platform
-import subprocess
 import sys
 import tempfile
+
+from bounded_process import run_bounded
 
 
 def main():
@@ -29,13 +30,17 @@ def main():
         "production_ready": False,
         "source_sha256": {p.relative_to(source).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                           for p in files},
+        "review_tool_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                               for p in sorted(tests.glob("*.py"))},
         "runs": [],
     }
     # Linux fixtures use /tmp rather than the Windows source mount. On Windows,
     # keep temp writes under this task's evidence directory. No host data is used.
     scratch_parent = "/tmp" if sys.platform == "linux" else str(output)
     evidence["scratch_location"] = "/tmp" if sys.platform == "linux" else "<evidence>"
-    with tempfile.TemporaryDirectory(prefix="push4-run-", dir=scratch_parent) as temporary:
+    fixture = tempfile.TemporaryDirectory(prefix="push4-run-", dir=scratch_parent)
+    temporary = fixture.name
+    try:
         env = dict(os.environ)
         env.update({"TEMP": temporary, "TMP": temporary, "TMPDIR": temporary,
                     "PYTHONDONTWRITEBYTECODE": "1", "PYTHONIOENCODING": "utf-8",
@@ -50,10 +55,14 @@ def main():
             ("probe", [sys.executable, "-m", "sandbox_probe"], source / "tools" / "m0"),
         ]
         for label, command, cwd in commands:
-            result = subprocess.run(command, cwd=str(cwd), env=env, stdin=subprocess.DEVNULL,
-                                    capture_output=True, timeout=60)
-            stdout = result.stdout.decode("utf-8", errors="replace").replace("\r\n", "\n")
-            stderr = result.stderr.decode("utf-8", errors="replace").replace("\r\n", "\n")
+            try:
+                result = run_bounded(command, cwd=cwd, env=env, timeout=60)
+            except Exception as error:
+                result = {"exit_code": None, "timed_out": False, "timeout_seconds": 60,
+                          "error": {"type": type(error).__name__},
+                          "cleanup": {"complete": False}, "stdout": b"", "stderr": b""}
+            stdout = result.pop("stdout").decode("utf-8", errors="replace").replace("\r\n", "\n")
+            stderr = result.pop("stderr").decode("utf-8", errors="replace").replace("\r\n", "\n")
             # Keep evidence portable and remove local user/workspace paths.
             for original, replacement in ((str(tests), "<security-tests>"),
                                           (str(source), "<review-source>"),
@@ -61,17 +70,31 @@ def main():
                 stdout, stderr = stdout.replace(original, replacement), stderr.replace(original, replacement)
             (output / (label + ".stdout.txt")).write_bytes(stdout.encode("utf-8"))
             (output / (label + ".stderr.txt")).write_bytes(stderr.encode("utf-8"))
-            entry = {"name": label, "exit_code": result.returncode}
-            if label == "probe":
-                report = json.loads(stdout)
-                entry["observations"] = dict(Counter(item["status"] for item in report["observations"]))
-                entry["production_ready"] = report["production_ready"]
+            entry = dict(result, name=label)
+            if label == "probe" and not entry["timed_out"] and not entry["error"]:
+                try:
+                    report = json.loads(stdout)
+                    entry["observations"] = dict(Counter(item["status"] for item in report["observations"]))
+                    entry["production_ready"] = report["production_ready"]
+                except (ValueError, KeyError, TypeError) as error:
+                    entry["error"] = {"type": type(error).__name__, "operation": "parse-probe"}
             evidence["runs"].append(entry)
+            if entry["timed_out"] or entry["error"] or not entry["cleanup"]["complete"]:
+                break
+    finally:
+        try:
+            fixture.cleanup()
+        except OSError as error:
+            evidence["fixture_cleanup_error"] = {"type": type(error).__name__, "code": error.errno}
     evidence["temporary_fixture_removed"] = not Path(temporary).exists()
+    failed = (not evidence["temporary_fixture_removed"] or "fixture_cleanup_error" in evidence
+              or any(run["timed_out"] or run["error"] or not run["cleanup"]["complete"]
+                     or (run["name"] != "probe" and run["exit_code"] != 0) for run in evidence["runs"]))
+    evidence["collector_exit_code"] = 1 if failed else 0
     (output / "summary.json").write_bytes((json.dumps(evidence, indent=2, sort_keys=True) + "\n").encode("utf-8"))
     print(json.dumps(evidence, indent=2, sort_keys=True))
     # Probe exit 1/2 is meaningful research evidence, never rewritten as a pass.
-    return 1 if any(run["exit_code"] for run in evidence["runs"] if run["name"] != "probe") else 0
+    return evidence["collector_exit_code"]
 
 
 if __name__ == "__main__":
