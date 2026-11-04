@@ -1,0 +1,8 @@
+test_incomplete_cleanup_cannot_report_success_or_continue (__main__.CollectorGuardTests) ... ok
+test_outer_assignment_failure_reaps_unresumed_python (__main__.CollectorGuardTests) ... ok
+test_outer_configuration_failure_never_starts_python (__main__.CollectorGuardTests) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.369s
+
+OK

@@ -1,0 +1,16 @@
+{
+  "fault": "pause after DuplicateHandle before experimental Job assignment",
+  "timeout_seconds": 60,
+  "python": "3.8.5",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "production_ready": false,
+  "guard_emergency_termination": true,
+  "collector_returncode": null,
+  "collector_exception": "TimeoutExpired",
+  "elapsed_seconds": 60.39,
+  "child_exit_confirmed_before_guard": false,
+  "summary_written": false,
+  "guard_confirmed_child_exit": true,
+  "guard_fixture_removed": true,
+  "regression_passed": false
+}
