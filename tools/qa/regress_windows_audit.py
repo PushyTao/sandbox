@@ -104,8 +104,9 @@ def main():
                    str(args.source.resolve()), "--output", str(output.resolve()),
                    "--case", name]
         started = datetime.now(timezone.utc).isoformat()
-        child = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                               timeout=60)
+        # Do not kill the audit supervisor on an outer timeout: it may own a
+        # suspended child that still needs its native finally cleanup.
+        child = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (args.output / (name + ".stdout.txt")).write_bytes(child.stdout)
         (args.output / (name + ".stderr.txt")).write_bytes(child.stderr)
         report = json.loads(output.read_text(encoding="utf-8")) if output.exists() else {}
