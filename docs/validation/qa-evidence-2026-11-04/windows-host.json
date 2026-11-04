@@ -1,0 +1,10 @@
+{
+    "captured_utc":  "2026-11-04T06:31:32.3225032Z",
+    "command":  "Get-ItemProperty HKLM:/SOFTWARE/Microsoft/Windows NT/CurrentVersion; WindowsPrincipal.IsInRole(Administrator)",
+    "current_build":  "26300",
+    "ubr":  9711,
+    "display_version":  "26H2",
+    "token_is_admin":  false,
+    "process_arch":  "AMD64",
+    "powershell":  "5.1.26100.9711"
+}

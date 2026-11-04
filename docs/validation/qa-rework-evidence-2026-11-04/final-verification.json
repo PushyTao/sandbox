@@ -1,0 +1,17 @@
+{
+  "verified_utc": "2026-11-04T07:41:16.600531+00:00",
+  "initial_fix_commit": "eb9607eb95e1cba3e837409feee6d7b65ee29c77",
+  "final_source_sha256": {
+    "tools/qa/audit_windows_failures.py": "64b10a59f11659faee2c30566301347a2a8b367a958767fffc7eebe0d71b0512",
+    "tools/qa/regress_windows_audit.py": "fca6c261c9ac0709b0ccaaea1a08bde48238b5f75dbf85f7348e31f4dad11b07",
+    "tools/qa/README.md": "93219ddb5ced686fe4a00020cf5d6737959ba8d3c7cb4bd21e490cfc62e8d67d",
+    "docs/validation/qa-rework-2026-11-04.md": "f75c9d2ec46a1cdc3240dec8fc9be584ccaef5aad077ea4d5ad9118be67cfdd0"
+  },
+  "final_regression_exit": {
+    "3.8.5": 0,
+    "3.12.3": 0
+  },
+  "final_controls_expected_per_interpreter": 11,
+  "change": "Remove outer forced timeout; wait for audit cleanup in foreground",
+  "limitation": "Does not verify cleanup on arbitrary supervisor kill or crash"
+}

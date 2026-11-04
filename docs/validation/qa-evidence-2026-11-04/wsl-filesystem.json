@@ -1,0 +1,6 @@
+{
+  "command": "wsl -d Ubuntu --exec /usr/bin/stat -f -c %T /mnt/c/Users/WuYantao/multica_workspaces_desktop-api.multica.ai/pushytao-f7277ec6f210/push-5-6d931fa9d6ed/workdir/sandbox/docs/validation/qa-evidence-2026-11-04/wsl-ubuntu/scratch",
+  "exit_code": 0,
+  "stdout": "v9fs\n",
+  "meaning": "Source and synthetic test scratch are on the /mnt/c host mount, not WSL ext4."
+}

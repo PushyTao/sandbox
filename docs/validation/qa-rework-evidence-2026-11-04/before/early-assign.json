@@ -1,0 +1,86 @@
+{
+  "baseline": "c19b23585d64d20869adb9654cfbc1f013584d40",
+  "utc": "2026-11-04T07:32:54.792942+00:00",
+  "python": "3.8.5",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "command": [
+    "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\audit_windows_failures.py",
+    "--source",
+    "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+    "--output",
+    "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\before\\early-assign.json"
+  ],
+  "checks": [
+    {
+      "operation": "CreateProcessW",
+      "injected_error": 5,
+      "expected": "unavailable",
+      "observation": {
+        "id": "windows.job_lifecycle",
+        "status": "unavailable",
+        "summary": "Job lifecycle experiment did not complete.",
+        "details": {
+          "assigned_before_resume": false,
+          "running_before_close": false,
+          "terminated_after_close": false,
+          "error": {
+            "operation": "CreateProcessW",
+            "code": 5
+          }
+        }
+      },
+      "pid_gone": null,
+      "open_process_error": null,
+      "assertion_passed": true
+    },
+    {
+      "operation": "AssignProcessToJobObject",
+      "injected_error": 5,
+      "expected": "fail",
+      "observation": {
+        "id": "windows.job_lifecycle",
+        "status": "fail",
+        "summary": "Job lifecycle experiment did not complete.",
+        "details": {
+          "assigned_before_resume": false,
+          "running_before_close": false,
+          "terminated_after_close": false,
+          "pid": 26984,
+          "error": {
+            "operation": "AssignProcessToJobObject",
+            "code": 5
+          }
+        }
+      },
+      "pid_gone": true,
+      "open_process_error": 87,
+      "assertion_passed": true
+    },
+    {
+      "operation": "ResumeThread",
+      "injected_error": 5,
+      "expected": "fail",
+      "observation": {
+        "id": "windows.job_lifecycle",
+        "status": "fail",
+        "summary": "Job lifecycle experiment did not complete.",
+        "details": {
+          "assigned_before_resume": false,
+          "running_before_close": false,
+          "terminated_after_close": false,
+          "pid": 25204,
+          "error": {
+            "operation": "AssignProcessToJobObject",
+            "code": 5
+          }
+        }
+      },
+      "pid_gone": true,
+      "open_process_error": 87,
+      "assertion_passed": true
+    }
+  ],
+  "scratch_remnants": [],
+  "scratch_root_removed": true,
+  "testing_level": "mock one API operation; real process/Job/cleanup/observer"
+}

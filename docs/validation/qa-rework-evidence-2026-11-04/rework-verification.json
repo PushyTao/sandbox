@@ -1,0 +1,50 @@
+{
+  "verified_utc": "2026-11-04T07:38:27.907499+00:00",
+  "prior_qa_sha": "6a44b1a9362800ea0a3efd55c6c3fc6aa1d9e085",
+  "native_baseline_sha": "c19b23585d64d20869adb9654cfbc1f013584d40",
+  "host_registry": {
+    "DisplayVersion": "26H2",
+    "CurrentBuild": "26300",
+    "UBR": 9711
+  },
+  "original_evidence_unchanged": true,
+  "baseline_checkout_clean": true,
+  "before_audit_git_blob": "845cb8c81474c23d4cb8ac16d100e58b97f981c6",
+  "before_audit_normalized_sha256": "0f6ff1c9e0cbbc9595c2ca6ea788167ec4d646c45d558b02a9178f0e619e76e9",
+  "final_source_sha256": {
+    "tools/qa/audit_windows_failures.py": "64b10a59f11659faee2c30566301347a2a8b367a958767fffc7eebe0d71b0512",
+    "tools/qa/regress_windows_audit.py": "4fc6395bb79643737ad75a6c6d6ed9a27ca70fb7d0faba5d32cc3e0f0d96d366",
+    "tools/qa/README.md": "93219ddb5ced686fe4a00020cf5d6737959ba8d3c7cb4bd21e490cfc62e8d67d",
+    "docs/validation/qa-rework-2026-11-04.md": "79f0816682c8786576b966b3df9f903825c05b2d56a9015969fcedb3b9913c99"
+  },
+  "compact_reports_note": "All controls and raw streams are in the attached ZIP; selected JSON and baseline logs are committed.",
+  "before_harness_note": "Initial regression harness before adding pre-import baseline validation; no audit fix applied.",
+  "before_suite_exit": 1,
+  "before_controls_expected": 3,
+  "before_controls_unexpected": 8,
+  "after_suite_exit": {
+    "3.8.5": 0,
+    "3.12.3": 0
+  },
+  "after_controls_expected_per_interpreter": 11,
+  "native_unittest": {
+    "passed": 23,
+    "skipped": 3,
+    "exit_code": 0
+  },
+  "native_probe": {
+    "counts": {
+      "pass": 1,
+      "unverified": 5
+    },
+    "exit_code": 2
+  },
+  "not_executed": [
+    "WSL",
+    "native Linux",
+    "macOS",
+    "product E2E",
+    "install/upgrade/rollback",
+    "security fixtures"
+  ]
+}

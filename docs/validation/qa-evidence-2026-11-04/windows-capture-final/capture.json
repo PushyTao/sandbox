@@ -1,0 +1,102 @@
+{
+  "baseline": "c19b23585d64d20869adb9654cfbc1f013584d40",
+  "captured_utc": "2026-11-04T06:37:53.352448+00:00",
+  "system": "Windows",
+  "release": "10",
+  "version": "10.0.26100",
+  "machine": "AMD64",
+  "python": "3.8.5",
+  "executable": "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
+  "wsl": false,
+  "scoped_temp": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-5-6d931fa9d6ed\\workdir\\sandbox\\docs\\validation\\qa-evidence-2026-11-04\\windows-capture-final\\scratch",
+  "source": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-5-6d931fa9d6ed\\workdir\\qa-baseline",
+  "observation_counts": {
+    "pass": 1,
+    "unverified": 5
+  },
+  "production_ready": false,
+  "remaining_scratch_entries": [],
+  "source_sha256": {
+    "tools/m0/sandbox_probe/__init__.py": "69d446dcc62db37360d904393ceaa2b51a35c1808dc7fc6880e40748d0ae8bfc",
+    "tools/m0/sandbox_probe/__main__.py": "199b2f0042eca1473474459af0602241e7e49839c888dc03fb1485ce383e960e",
+    "tools/m0/sandbox_probe/linux.py": "acc46e097e7ac9fa4c1be1bea77d4897b4e13cf32b349ee428e819cde5ebc892",
+    "tools/m0/sandbox_probe/report.py": "6efbfde5d42e582c6a3515aeb1808f55c9e2075fa4b154bada4bbf1f0fd0bdb2",
+    "tools/m0/sandbox_probe/windows.py": "7616e837be5cd5666e0efeb6a61af1ed066c8f8162435d47a1eed64ca2a388fa",
+    "tools/m0/tests/test_linux.py": "50bcb86d037cfc32ccff30ac374877f78248a95dd9fb23ce2cb8f1d7ab8d1672",
+    "tools/m0/tests/test_report.py": "1d4f236e58fd14b2ca66c58f830c305455ee19fd6f793a5f34585980abe171e8",
+    "tools/m0/tests/test_windows.py": "645ac2df478d02f0561f261a445a26d2fc49ccece3c040dfe44608669b048284"
+  },
+  "commands": [
+    {
+      "label": "revision",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-5-6d931fa9d6ed\\workdir\\qa-baseline",
+      "started_utc": "2026-11-04T06:37:52.786397+00:00",
+      "duration_seconds": 0.031,
+      "exit_code": 0,
+      "env_overrides": {}
+    },
+    {
+      "label": "source-status-before",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-5-6d931fa9d6ed\\workdir\\qa-baseline",
+      "started_utc": "2026-11-04T06:37:52.826987+00:00",
+      "duration_seconds": 0.047,
+      "exit_code": 0,
+      "env_overrides": {}
+    },
+    {
+      "label": "unit-default",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/m0/tests",
+        "-v"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-5-6d931fa9d6ed\\workdir\\qa-baseline",
+      "started_utc": "2026-11-04T06:37:52.870760+00:00",
+      "duration_seconds": 0.281,
+      "exit_code": 0,
+      "env_overrides": {}
+    },
+    {
+      "label": "probe",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
+        "-m",
+        "sandbox_probe",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-5-6d931fa9d6ed\\workdir\\sandbox\\docs\\validation\\qa-evidence-2026-11-04\\windows-capture-final\\probe.json"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-5-6d931fa9d6ed\\workdir\\qa-baseline\\tools\\m0",
+      "started_utc": "2026-11-04T06:37:53.154090+00:00",
+      "duration_seconds": 0.156,
+      "exit_code": 2,
+      "env_overrides": {}
+    },
+    {
+      "label": "source-status-after",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-5-6d931fa9d6ed\\workdir\\qa-baseline",
+      "started_utc": "2026-11-04T06:37:53.309081+00:00",
+      "duration_seconds": 0.047,
+      "exit_code": 0,
+      "env_overrides": {}
+    }
+  ]
+}
