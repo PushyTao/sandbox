@@ -1,0 +1,102 @@
+{
+  "recorded_utc": "2026-11-04T06:13:31.723121+00:00",
+  "python": "3.8.5",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "machine": "AMD64",
+  "commands": [
+    {
+      "name": "unittest",
+      "cwd": "review-c19b235",
+      "argv": [
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/m0/tests",
+        "-v"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "native-probe",
+      "cwd": "review-c19b235/tools/m0",
+      "argv": [
+        "python",
+        "-B",
+        "-m",
+        "sandbox_probe",
+        "--output",
+        "${WORKDIR}\\push3-evidence\\windows-report.json"
+      ],
+      "exit_code": 2
+    },
+    {
+      "name": "baseline-status",
+      "cwd": "review-c19b235",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "baseline-head",
+      "cwd": "review-c19b235",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "bundle-verify",
+      "cwd": "review-c19b235",
+      "argv": [
+        "git",
+        "bundle",
+        "verify",
+        "${WORKDIR}\\attachments\\PUSH-1-m0.bundle"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "observations": [
+    {
+      "id": "windows.job_lifecycle",
+      "status": "pass"
+    },
+    {
+      "id": "windows.filesystem",
+      "status": "unverified"
+    },
+    {
+      "id": "windows.token",
+      "status": "unverified"
+    },
+    {
+      "id": "windows.network",
+      "status": "unverified"
+    },
+    {
+      "id": "windows.ipc",
+      "status": "unverified"
+    },
+    {
+      "id": "windows.descendants",
+      "status": "unverified"
+    }
+  ],
+  "design_sha256": "e23cabd1e62799004a6b45990e0ea38907fa9a15b4c4c3d5b1f51309de8f11a6",
+  "restored_design_sha256": "5ade7cf27eae163360e2635aefd76a9c3651311b7f41b8443aae3e5ad75bfdcd",
+  "bundle_sha256": "09fdcdc431cafaec06ed9c455e8758980b9e622de2f951579a289d460ac6f7e2",
+  "scope": "Windows only; no security/QA signoff; Linux/WSL/macOS not executed",
+  "dotnet_os_version": "10.0.26300.0",
+  "powershell": "5.1.26100.9711",
+  "git": "2.54.0.windows.1",
+  "design_lf_normalized_equal": true,
+  "design_lf_sha256": "5ade7cf27eae163360e2635aefd76a9c3651311b7f41b8443aae3e5ad75bfdcd"
+}
