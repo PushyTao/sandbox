@@ -1,0 +1,184 @@
+{
+  "observations": [
+    {
+      "details": {
+        "bubblewrap": "bubblewrap 0.11.1",
+        "probe": {
+          "pid": 2,
+          "uid": 1000
+        },
+        "runtime_profile": "broad-/usr-PoC-only"
+      },
+      "id": "LINUX.setup",
+      "status": "pass",
+      "summary": "Fixed Python probe started in new namespaces"
+    },
+    {
+      "details": {
+        "read_write_succeeded": true
+      },
+      "id": "FS-1.workspace",
+      "status": "pass",
+      "summary": "Synthetic workspace read/write"
+    },
+    {
+      "details": {
+        "symlink_read_denied": true,
+        "symlink_write_denied": true,
+        "synthetic_secret_unchanged": true
+      },
+      "id": "FS-2.symlink",
+      "status": "pass",
+      "summary": "Symlink to a synthetic file outside the mount view"
+    },
+    {
+      "details": {
+        "protected_parent_rename_denied": true,
+        "protected_read": true,
+        "protected_rename_denied": true,
+        "protected_unlink_denied": true,
+        "protected_write_denied": true
+      },
+      "id": "FS-3.existing",
+      "status": "pass",
+      "summary": "Existing protected mount: read allowed, tested mutations blocked"
+    },
+    {
+      "details": {
+        "environment_scrubbed": true,
+        "private_home": true
+      },
+      "id": "ENV.private",
+      "status": "pass",
+      "summary": "Private scratch and cleared environment (single synthetic variable)"
+    },
+    {
+      "details": {
+        "bypass_reproduced": true,
+        "candidate_usable_in_production": false
+      },
+      "id": "FS-4.hardlink",
+      "status": "fail",
+      "summary": "Read-only subtree mount does not protect a writable hardlink alias"
+    },
+    {
+      "details": {
+        "bypass_reproduced": true,
+        "candidate_usable_in_production": false
+      },
+      "id": "FS-4.future-name",
+      "status": "fail",
+      "summary": "Mounting existing protected entries does not reserve absent names"
+    },
+    {
+      "details": {
+        "different_net_namespace": true,
+        "errno": 111,
+        "host_positive_control": true,
+        "operation_succeeded": false
+      },
+      "id": "NET-1.ipv4-tcp",
+      "status": "pass",
+      "summary": "Isolated namespace cannot reach a verified host loopback endpoint"
+    },
+    {
+      "details": {
+        "different_net_namespace": true,
+        "host_positive_control": true,
+        "host_received_probe_packet": false,
+        "operation_succeeded": true
+      },
+      "id": "NET-1.ipv4-udp",
+      "status": "pass",
+      "summary": "Isolated namespace cannot reach a verified host loopback endpoint"
+    },
+    {
+      "details": {
+        "different_net_namespace": true,
+        "errno": 111,
+        "host_positive_control": true,
+        "operation_succeeded": false
+      },
+      "id": "NET-1.ipv6-tcp",
+      "status": "pass",
+      "summary": "Isolated namespace cannot reach a verified host loopback endpoint"
+    },
+    {
+      "details": {
+        "different_net_namespace": true,
+        "host_positive_control": true,
+        "host_received_probe_packet": false,
+        "operation_succeeded": true
+      },
+      "id": "NET-1.ipv6-udp",
+      "status": "pass",
+      "summary": "Isolated namespace cannot reach a verified host loopback endpoint"
+    },
+    {
+      "details": {
+        "different_net_namespace": true,
+        "errno": 111,
+        "host_positive_control": true,
+        "operation_succeeded": false
+      },
+      "id": "NET-1.abstract-unix",
+      "status": "pass",
+      "summary": "Abstract Unix host socket is outside the namespace"
+    },
+    {
+      "details": {
+        "detached_child_observed_alive": true,
+        "detached_child_reaped": true,
+        "observed_descendants_collected_before_return": true,
+        "root_exit_code": 0,
+        "supervisor_crash_tested": false
+      },
+      "id": "PR-1.root-exit",
+      "status": "pass",
+      "summary": "Detached synthetic child is reaped after root exit"
+    },
+    {
+      "details": {},
+      "id": "LINUX.production",
+      "status": "unverified",
+      "summary": "Not a production backend: no policy compiler, seccomp, audited runtime profile or resource limits"
+    },
+    {
+      "details": {},
+      "id": "FS-4.nested-userns",
+      "status": "unverified",
+      "summary": "Nested user/mount namespace remount attacks are not tested or prevented by this PoC"
+    },
+    {
+      "details": {},
+      "id": "NET-1.full",
+      "status": "unverified",
+      "summary": "External routes, DNS, pathname IPC, WSL interop and all socket families are not fully tested"
+    },
+    {
+      "details": {},
+      "id": "PR-2.handles",
+      "status": "unverified",
+      "summary": "Inherited FD and control-channel attack matrix is not implemented"
+    },
+    {
+      "details": {},
+      "id": "LIFE-1.full",
+      "status": "unverified",
+      "summary": "Supervisor crash, timeout, cancellation and disconnect matrix remains incomplete"
+    }
+  ],
+  "platform": {
+    "machine": "x86_64",
+    "release": "6.6.114.1-microsoft-standard-WSL2",
+    "sys_platform": "linux",
+    "system": "Linux",
+    "version": "#1 SMP PREEMPT_DYNAMIC Mon Dec  1 20:46:23 UTC 2025",
+    "wsl": {
+      "detected": true
+    }
+  },
+  "production_ready": false,
+  "python_version": "3.14.4",
+  "schema_version": "1.0"
+}
