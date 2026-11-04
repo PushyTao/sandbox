@@ -24,4 +24,16 @@ Linux 需要现有可用的 `/usr/bin/bwrap`、user namespace、IPv4/IPv6 和 Gi
 
 `audit_windows_failures.py` 每次仅 mock 一个 Win32 API 返回拒绝，其余使用真实 Job/子进程/清理，并用独立 Win32 API 查询 PID 状态。CreateProcessW 拒绝场景不产生真实子进程；其余两项会创建真实 suspended 子进程。三项断言通过且无临时目录残留才退出 0。它不是真实宿主权限拒绝或产品 E2E 测试。
 
+PUSH-5 返工后，每项还必须满足目标 API 恰好调用一次、错误 operation/code 与注入匹配、PID 和归组阶段符合场景。CreateProcessW 失败不得报告 PID；归组/恢复失败必须有有效 PID，且独立查询确认退出。缺失阶段、提前失败、清理失败均不能计为通过。报告的 `target_call_count` 与 `assertions` 保存每条判定的依据。
+
+夹具回归命令（输出目录必须不存在）：
+
+```powershell
+python -B sandbox/tools/qa/regress_windows_audit.py --source qa-baseline --output qa-regression-py38
+py -3.12 -B sandbox/tools/qa/regress_windows_audit.py --source qa-baseline --output qa-regression-py312
+python -B sandbox/tools/qa/regress_windows_audit.py --source qa-baseline --output qa-early-assign.json --case early-assign
+```
+
+前两条执行 11 个控制：正常运行保留三项原始 API 故障；提前归组失败及九项错误/缺失证据控制必须各退出 1，全部符合预期时回归工具退出 0。最后一条单独复现归组提前失败，直接透传夹具退出码，预期 **1**。报告中的错误/PID/阶段变异只发生于真实固定探针完成清理后的返回数据，属于 QA 断言回归，不是新增 OS 隔离证据。完整 stdout/stderr、报告和命令保存在输出目录；见 `docs/validation/qa-rework-2026-11-04.md` 的修复前后结果。
+
 本轮早期采集器将日志解码后写为 UTF-8，产生多余 CRCRLF；提交前仅将这些换行规范化为 LF，正文、测试结果和原始 probe.json 未改写。`log-normalization.json` 记录转换前后摘要和转换次数。交付版本保存 stdout/stderr 原始字节，后续采集以此为准。新运行使用新目录，不覆盖旧证据。原始报告不含秘密；绝对路径仅供复现命令审计，不作为交付链接。

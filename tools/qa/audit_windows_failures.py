@@ -57,13 +57,15 @@ def main():
                     ctypes.set_last_error(5)
                     return value
 
-                setattr(kernel, operation, Mock(side_effect=deny))
+                target = Mock(side_effect=deny)
+                setattr(kernel, operation, target)
                 with patch.object(windows.ctypes, "WinDLL", return_value=kernel):
                     observation = windows._job_lifecycle()
                 pid = observation.details.get("pid")
                 independently_gone = None
                 last_error = None
-                if pid:
+                valid_pid = type(pid) is int and 0 < pid <= 0xFFFFFFFF
+                if valid_pid:
                     handle = observer.OpenProcess(0x100000, False, pid)
                     if handle:
                         try:
@@ -75,10 +77,24 @@ def main():
                         last_error = ctypes.get_last_error()
                         independently_gone = last_error == 87
                 expected = "unavailable" if operation == "CreateProcessW" else "fail"
-                correct = (observation.status == expected and
-                           "cleanup_errors" not in observation.details and
-                           (pid is None or independently_gone is True))
+                details = observation.details
+                assertions = dict(
+                    target_called_once=target.call_count == 1,
+                    expected_status=observation.status == expected,
+                    expected_error=details.get("error") == {"operation": operation, "code": 5},
+                    expected_assignment_stage=(details.get("assigned_before_resume")
+                                               is (operation == "ResumeThread")),
+                    child_not_running=details.get("running_before_close") is False,
+                    normal_close_not_reached=details.get("terminated_after_close") is False,
+                    expected_pid=("pid" not in details if operation == "CreateProcessW"
+                                  else valid_pid),
+                    no_cleanup_errors="cleanup_errors" not in details,
+                    independent_cleanup=(independently_gone is None
+                                         if operation == "CreateProcessW"
+                                         else independently_gone is True))
+                correct = all(assertions.values())
                 checks.append(dict(operation=operation, injected_error=5, expected=expected,
+                                   target_call_count=target.call_count, assertions=assertions,
                                    observation=observation.to_dict(), pid_gone=independently_gone,
                                    open_process_error=last_error, assertion_passed=correct))
             remnants = [p.name for p in Path(scratch).iterdir()]
@@ -89,7 +105,8 @@ def main():
                   testing_level="mock one API operation; real process/Job/cleanup/observer")
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, indent=2))
-    return 0 if all(c["assertion_passed"] for c in checks) and not remnants else 1
+    return 0 if (all(c["assertion_passed"] for c in checks) and not remnants
+                 and result["scratch_root_removed"]) else 1
 
 
 if __name__ == "__main__":

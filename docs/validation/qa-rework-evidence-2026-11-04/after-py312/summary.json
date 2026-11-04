@@ -1,0 +1,334 @@
+{
+  "python": "3.12.3",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "machine": "AMD64",
+  "command": [
+    "sandbox/tools/qa/regress_windows_audit.py",
+    "--source",
+    "qa-baseline",
+    "--output",
+    "sandbox/docs/validation/qa-rework-evidence-2026-11-04/after-py312"
+  ],
+  "results": [
+    {
+      "case": "normal",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\normal.json",
+        "--case",
+        "normal"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:24.541003+00:00",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "assertion_passed": [
+        true,
+        true,
+        true
+      ],
+      "expected_assertion_passed": [
+        true,
+        true,
+        true
+      ],
+      "regression_passed": true
+    },
+    {
+      "case": "early-assign",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\early-assign.json",
+        "--case",
+        "early-assign"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:24.969866+00:00",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "expected_assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "regression_passed": true
+    },
+    {
+      "case": "wrong-operation",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\wrong-operation.json",
+        "--case",
+        "wrong-operation"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:25.383273+00:00",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "expected_assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "regression_passed": true
+    },
+    {
+      "case": "wrong-code",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\wrong-code.json",
+        "--case",
+        "wrong-code"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:25.788982+00:00",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "expected_assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "regression_passed": true
+    },
+    {
+      "case": "assign-missing-pid",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\assign-missing-pid.json",
+        "--case",
+        "assign-missing-pid"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:26.223568+00:00",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "assertion_passed": [
+        true,
+        false,
+        true
+      ],
+      "expected_assertion_passed": [
+        true,
+        false,
+        true
+      ],
+      "regression_passed": true
+    },
+    {
+      "case": "resume-missing-pid",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\resume-missing-pid.json",
+        "--case",
+        "resume-missing-pid"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:26.630560+00:00",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "expected_assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "regression_passed": true
+    },
+    {
+      "case": "resume-invalid-pid",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\resume-invalid-pid.json",
+        "--case",
+        "resume-invalid-pid"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:27.066523+00:00",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "expected_assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "regression_passed": true
+    },
+    {
+      "case": "assign-wrong-stage",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\assign-wrong-stage.json",
+        "--case",
+        "assign-wrong-stage"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:27.482465+00:00",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "assertion_passed": [
+        true,
+        false,
+        true
+      ],
+      "expected_assertion_passed": [
+        true,
+        false,
+        true
+      ],
+      "regression_passed": true
+    },
+    {
+      "case": "resume-wrong-stage",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\resume-wrong-stage.json",
+        "--case",
+        "resume-wrong-stage"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:28.001164+00:00",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "expected_assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "regression_passed": true
+    },
+    {
+      "case": "resume-missing-stage",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\resume-missing-stage.json",
+        "--case",
+        "resume-missing-stage"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:28.415489+00:00",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "expected_assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "regression_passed": true
+    },
+    {
+      "case": "cleanup-error",
+      "argv": [
+        "C:\\Users\\WuYantao\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\tools\\qa\\regress_windows_audit.py",
+        "--source",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\qa-baseline",
+        "--output",
+        "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir\\sandbox\\docs\\validation\\qa-rework-evidence-2026-11-04\\after-py312\\cleanup-error.json",
+        "--case",
+        "cleanup-error"
+      ],
+      "cwd": "C:\\Users\\WuYantao\\multica_workspaces_desktop-api.multica.ai\\pushytao-f7277ec6f210\\push-4-2d5052dbad92\\workdir",
+      "started_utc": "2026-11-04T07:34:30.318990+00:00",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "expected_assertion_passed": [
+        true,
+        true,
+        false
+      ],
+      "regression_passed": true
+    }
+  ],
+  "testing_level": "QA regression controls with native fixed probe cleanup; returned metadata mutated in named negative cases"
+}
