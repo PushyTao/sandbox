@@ -1,0 +1,75 @@
+name: M0 probe tests (not platform certification)
+
+"on":
+  workflow_dispatch:
+    inputs:
+      runner_use_authorized:
+        description: Repository owner has approved runner usage and any costs
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    if: ${{ inputs.runner_use_authorized }}
+    name: ${{ matrix.os }} / ${{ matrix.arch }} / Python 3.12.10
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            arch: x64
+          - os: windows-2022
+            arch: x64
+          - os: macos-15
+            arch: arm64
+    env:
+      PYTHONUTF8: "1"
+      SBX_M0_INTEGRATION: "0"
+
+    steps:
+      - name: Checkout reviewed source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up experiment interpreter
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12.10"
+          architecture: ${{ matrix.arch }}
+
+      - name: Record environment and evidence scope
+        shell: python
+        run: |
+          import json
+          import os
+          import platform
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          metadata = {
+              "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+              "python": sys.version,
+              "platform": platform.platform(),
+              "machine": platform.machine(),
+              "runner": {key: os.environ.get(key) for key in
+                         ("RUNNER_OS", "RUNNER_ARCH", "ImageOS", "ImageVersion")},
+              "production_ready": False,
+          }
+          print(json.dumps(metadata, indent=2))
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8") as summary:
+              summary.write("M0 probe tests only. No platform sandbox certification.\n\n")
+              summary.write("Linux integration is disabled. macOS has no sandbox probe. "
+                            "Windows tests cover only bounded synthetic Job behavior. "
+                            "Skipped tests are not passes. See verbose test logs.\n\n")
+              summary.write("```json\n" + json.dumps(metadata, indent=2) + "\n```\n")
+
+      - name: Run existing M0 tests (preserve failures and skips)
+        run: python -m unittest discover -s tools/m0/tests -v
