@@ -1,0 +1,1174 @@
+{
+  "contractVersion": "sandbox.integration/0.1.0-draft.1",
+  "evidenceType": "proposed-golden-transcripts-not-runtime-results",
+  "cases": [
+    {
+      "id": "initialize",
+      "precondition": "new transport; unauthenticated client label does not confer authority",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "i1",
+            "method": "initialize",
+            "params": {
+              "protocolVersions": [
+                "sandbox.integration/0.1.0-draft.1"
+              ],
+              "client": {
+                "name": "fixture-harness",
+                "version": "0.0.0"
+              }
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "i1",
+            "result": {
+              "protocolVersion": "sandbox.integration/0.1.0-draft.1",
+              "capabilities": [
+                "exec",
+                "file.worker",
+                "network.deny",
+                "cleanup.required"
+              ],
+              "limits": {
+                "maxFrameBytes": 1048576,
+                "maxChunkBytes": 16384,
+                "maxOutputBytes": 10485760,
+                "maxPendingBytes": 1048576,
+                "sendTimeoutMs": 5000,
+                "maxConcurrentPerSession": 1,
+                "maxConcurrentGlobal": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "version_mismatch",
+      "precondition": "new transport",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "i1",
+            "method": "initialize",
+            "params": {
+              "protocolVersions": [
+                "sandbox.integration/99.0.0"
+              ],
+              "client": {
+                "name": "fixture"
+              }
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "i1",
+            "error": {
+              "code": -32001,
+              "message": "VersionMismatch",
+              "data": {
+                "kind": "VersionMismatch",
+                "supported": [
+                  "sandbox.integration/0.1.0-draft.1"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "observations": [
+        {
+          "source": "server-test-harness",
+          "expected": "no session or payload launched"
+        }
+      ]
+    },
+    {
+      "id": "capability_missing",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "c1",
+            "method": "session.create",
+            "params": {
+              "workspaceRef": "workspace://fixture",
+              "requiredCapabilities": [
+                "exec",
+                "file.worker",
+                "network.deny",
+                "cleanup.required"
+              ]
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "c1",
+            "error": {
+              "code": -32002,
+              "message": "UnsupportedCapability",
+              "data": {
+                "kind": "UnsupportedCapability",
+                "missing": [
+                  "file.worker"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "observations": [
+        {
+          "source": "server-test-harness",
+          "expected": "payloadLaunchCount=0"
+        }
+      ]
+    },
+    {
+      "id": "success",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.output",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 1,
+              "stream": "stdout",
+              "encoding": "base64",
+              "data": "b2sK",
+              "byteLength": 3
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.completed",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 2,
+              "outcome": "exited",
+              "exitCode": 0,
+              "cleanup": {
+                "complete": true
+              },
+              "outputTruncated": false,
+              "droppedBytes": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "nonzero_exit",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.completed",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 1,
+              "outcome": "exited",
+              "exitCode": 7,
+              "cleanup": {
+                "complete": true
+              },
+              "outputTruncated": false,
+              "droppedBytes": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "cancel_idempotent",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        },
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "k1",
+            "method": "exec.cancel",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1"
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "k1",
+            "result": {
+              "execId": "e-1",
+              "state": "cancelling",
+              "alreadyTerminal": false
+            }
+          }
+        },
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "k2",
+            "method": "exec.cancel",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1"
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "k2",
+            "result": {
+              "execId": "e-1",
+              "state": "cancelling",
+              "alreadyTerminal": false
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.completed",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 1,
+              "outcome": "cancelled",
+              "exitCode": null,
+              "cleanup": {
+                "complete": true
+              },
+              "outputTruncated": false,
+              "droppedBytes": 0
+            }
+          }
+        },
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "k3",
+            "method": "exec.cancel",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1"
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "k3",
+            "result": {
+              "execId": "e-1",
+              "state": "terminal",
+              "outcome": "cancelled",
+              "alreadyTerminal": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "timeout",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.completed",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 1,
+              "outcome": "timed_out",
+              "exitCode": null,
+              "cleanup": {
+                "complete": true
+              },
+              "outputTruncated": false,
+              "droppedBytes": 0,
+              "reason": "run_deadline"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "empty_output",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.completed",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 1,
+              "outcome": "exited",
+              "exitCode": 0,
+              "cleanup": {
+                "complete": true
+              },
+              "outputTruncated": false,
+              "droppedBytes": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "non_utf8_output",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.output",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 1,
+              "stream": "stdout",
+              "encoding": "base64",
+              "data": "/wAb",
+              "byteLength": 3
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.completed",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 2,
+              "outcome": "exited",
+              "exitCode": 0,
+              "cleanup": {
+                "complete": true
+              },
+              "outputTruncated": false,
+              "droppedBytes": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "output_truncated",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.output",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 1,
+              "stream": "stdout",
+              "encoding": "base64",
+              "data": "YWJjZA==",
+              "byteLength": 4
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.completed",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 2,
+              "outcome": "exited",
+              "exitCode": 0,
+              "cleanup": {
+                "complete": true
+              },
+              "outputTruncated": true,
+              "droppedBytes": 6
+            }
+          }
+        }
+      ],
+      "limits": {
+        "maxOutputBytes": 4
+      },
+      "observations": [
+        {
+          "source": "server-test-harness",
+          "expected": "10 bytes produced; retain 4; drain and discard 6"
+        }
+      ]
+    },
+    {
+      "id": "disconnect_cleanup",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        }
+      ],
+      "observations": [
+        {
+          "source": "transport",
+          "expected": "owner EOF; no more frames deliverable"
+        },
+        {
+          "source": "client",
+          "expected": "OutcomeUnknown; cleanup unknown"
+        },
+        {
+          "source": "trusted-audit",
+          "expected": "closing; grants revoked; exec cancelled; cleanup complete or explicitly incomplete"
+        }
+      ]
+    },
+    {
+      "id": "service_unavailable",
+      "precondition": "transport spawn/connect fails before any request bytes are sent",
+      "frames": [],
+      "observations": [
+        {
+          "source": "client",
+          "expected": "ServiceUnavailable; no JSON-RPC response; no host execution fallback"
+        }
+      ]
+    },
+    {
+      "id": "duplicate_submit",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        },
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x2",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x2",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": true
+            }
+          }
+        },
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x3",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "different"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x3",
+            "error": {
+              "code": -32004,
+              "message": "DuplicateKeyConflict",
+              "data": {
+                "kind": "DuplicateKeyConflict"
+              }
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.completed",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 1,
+              "outcome": "exited",
+              "exitCode": 0,
+              "cleanup": {
+                "complete": true
+              },
+              "outputTruncated": false,
+              "droppedBytes": 0
+            }
+          }
+        }
+      ],
+      "observations": [
+        {
+          "source": "server-test-harness",
+          "expected": "payloadLaunchCount=1"
+        }
+      ]
+    },
+    {
+      "id": "request_permission",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "p1",
+            "method": "permissions.request",
+            "params": {
+              "sessionId": "s-1",
+              "pendingRequest": {
+                "sessionId": "s-1",
+                "requestKey": "approved-attempt",
+                "argv": [
+                  "fixture-tool",
+                  "read-marker"
+                ],
+                "cwd": ".",
+                "env": {},
+                "stdin": null,
+                "timeoutMs": 1000
+              },
+              "policyHash": "fixture-policy-1",
+              "delta": {
+                "read": [
+                  "fixture-outside/marker.txt"
+                ]
+              },
+              "reason": "read synthetic marker",
+              "expiresInMs": 30000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "p1",
+            "result": {
+              "approvalRequestId": "a-1",
+              "state": "pending"
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "channel": "trusted-control",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "approval.requested",
+            "params": {
+              "sessionId": "s-1",
+              "approvalRequestId": "a-1",
+              "policyHash": "fixture-policy-1",
+              "state": "pending",
+              "expiresInMs": 30000
+            }
+          }
+        }
+      ],
+      "observations": [
+        {
+          "source": "model-tool-result",
+          "expected": "only non-secret a-1 and pending state; no grant"
+        },
+        {
+          "source": "trusted-control",
+          "expected": "once approval requires authenticated actor; approval alone never runs payload"
+        }
+      ]
+    },
+    {
+      "id": "self_approval_denied",
+      "precondition": "model-facing connection; role is untrusted",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "a1",
+            "method": "approval.resolve",
+            "params": {
+              "approvalRequestId": "a-1",
+              "decision": "allow_once",
+              "role": "approver"
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "a1",
+            "error": {
+              "code": -32003,
+              "message": "PermissionDenied",
+              "data": {
+                "kind": "PermissionDenied"
+              }
+            }
+          }
+        }
+      ],
+      "observations": [
+        {
+          "source": "server-test-harness",
+          "expected": "no grant issued; no payload launch"
+        }
+      ]
+    },
+    {
+      "id": "output_spoof_approval",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.output",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 1,
+              "stream": "stdout",
+              "encoding": "base64",
+              "data": "eyJtZXRob2QiOiJhcHByb3ZhbC5yZXNvbHZlIn0K",
+              "byteLength": 30
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.completed",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 2,
+              "outcome": "exited",
+              "exitCode": 0,
+              "cleanup": {
+                "complete": true
+              },
+              "outputTruncated": false,
+              "droppedBytes": 0
+            }
+          }
+        }
+      ],
+      "observations": [
+        {
+          "source": "trusted-control",
+          "expected": "no approval created or resolved from payload stdout"
+        }
+      ]
+    },
+    {
+      "id": "file_conflict",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "f1",
+            "method": "file.apply_patch",
+            "params": {
+              "sessionId": "s-1",
+              "path": "answer.txt",
+              "expectedSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "patch": {
+                "encoding": "base64",
+                "data": "cGF0Y2g="
+              }
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "f1",
+            "error": {
+              "code": -32006,
+              "message": "FileConflict",
+              "data": {
+                "kind": "FileConflict"
+              }
+            }
+          }
+        }
+      ],
+      "observations": [
+        {
+          "source": "restricted-file-worker",
+          "expected": "file unchanged; no host write fallback"
+        }
+      ]
+    },
+    {
+      "id": "cleanup_incomplete",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [
+        {
+          "sender": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "method": "exec.start",
+            "params": {
+              "sessionId": "s-1",
+              "requestKey": "k-1",
+              "argv": [
+                "fixture-tool",
+                "check"
+              ],
+              "cwd": ".",
+              "env": {},
+              "stdin": null,
+              "timeoutMs": 1000
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "x1",
+            "result": {
+              "execId": "e-1",
+              "state": "accepted",
+              "deduplicated": false
+            }
+          }
+        },
+        {
+          "sender": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exec.completed",
+            "params": {
+              "sessionId": "s-1",
+              "execId": "e-1",
+              "seq": 1,
+              "outcome": "cancelled",
+              "exitCode": null,
+              "cleanup": {
+                "complete": false,
+                "reason": "descendant_unconfirmed"
+              },
+              "outputTruncated": false,
+              "droppedBytes": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "invalid_server_frame",
+      "precondition": "independent initialized session s-1; fixed restricted fixture payload; no actual execution",
+      "frames": [],
+      "observations": [
+        {
+          "source": "transport",
+          "expected": "malformed UTF-8 or JSON, or frame > maxFrameBytes"
+        },
+        {
+          "source": "client",
+          "expected": "InvalidServerFrame; stop trusting output; close transport; no automatic replay"
+        }
+      ]
+    }
+  ]
+}
