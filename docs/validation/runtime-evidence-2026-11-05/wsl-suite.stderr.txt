@@ -1,0 +1,33 @@
+test_lifecycle_setup_failure_collects_observed_child_before_return (test_linux.LinuxProbeTests.test_lifecycle_setup_failure_collects_observed_child_before_return) ... ok
+test_missing_bwrap_does_not_run_a_workload (test_linux.LinuxProbeTests.test_missing_bwrap_does_not_run_a_workload) ... ok
+test_plan_uses_namespaces_clear_environment_and_no_host_root (test_linux.LinuxProbeTests.test_plan_uses_namespaces_clear_environment_and_no_host_root) ... ok
+test_platform_mismatch_is_unverified (test_linux.LinuxProbeTests.test_platform_mismatch_is_unverified) ... ok
+test_probe_output_is_bounded_during_collection (test_linux.LinuxProbeTests.test_probe_output_is_bounded_during_collection) ... ok
+test_real_probe_exercises_positive_and_negative_cases (test_linux.LinuxProbeTests.test_real_probe_exercises_positive_and_negative_cases) ... ok
+test_single_counterexample_is_not_reported_as_protection (test_linux.LinuxProbeTests.test_single_counterexample_is_not_reported_as_protection) ... ok
+test_none_details_become_an_independent_empty_mapping (test_report.ObservationTests.test_none_details_become_an_independent_empty_mapping) ... ok
+test_rejects_unknown_status (test_report.ObservationTests.test_rejects_unknown_status) ... ok
+test_to_dict_round_trips_through_json (test_report.ObservationTests.test_to_dict_round_trips_through_json) ... ok
+test_all_pass_report_is_never_production_ready (test_report.ReportTests.test_all_pass_report_is_never_production_ready) ... ok
+test_cli_prints_json_and_writes_utf8_output (test_report.ReportTests.test_cli_prints_json_and_writes_utf8_output) ... ok
+test_cli_uses_json_newlines_independent_of_host (test_report.ReportTests.test_cli_uses_json_newlines_independent_of_host) ... ok
+test_empty_probe_result_cannot_produce_success (test_report.ReportTests.test_empty_probe_result_cannot_produce_success) ... ok
+test_exit_code_is_two_for_incomplete_evidence (test_report.ReportTests.test_exit_code_is_two_for_incomplete_evidence) ... ok
+test_exit_code_prioritizes_failures (test_report.ReportTests.test_exit_code_prioritizes_failures) ... ok
+test_inner_import_error_is_a_controlled_failure (test_report.ReportTests.test_inner_import_error_is_a_controlled_failure) ... ok
+test_invalid_probe_result_becomes_a_controlled_failure (test_report.ReportTests.test_invalid_probe_result_becomes_a_controlled_failure) ... ok
+test_missing_platform_module_is_unavailable (test_report.ReportTests.test_missing_platform_module_is_unavailable) ... ok
+test_output_failure_emits_one_sanitized_failure_report (test_report.ReportTests.test_output_failure_emits_one_sanitized_failure_report) ... ok
+test_probe_exception_does_not_expose_exception_message (test_report.ReportTests.test_probe_exception_does_not_expose_exception_message) ... ok
+test_unsupported_platform_is_explicitly_unverified (test_report.ReportTests.test_unsupported_platform_is_explicitly_unverified) ... ok
+test_descendant_query_failure_is_not_success_and_reaps_tree (test_windows.WindowsProbeTests.test_descendant_query_failure_is_not_success_and_reaps_tree) ... skipped 'requires native Windows'
+test_job_close_reaps_running_descendant (test_windows.WindowsProbeTests.test_job_close_reaps_running_descendant) ... skipped 'requires native Windows'
+test_job_never_claims_other_security_boundaries (test_windows.WindowsProbeTests.test_job_never_claims_other_security_boundaries) ... ok
+test_native_job_kills_running_synthetic_child (test_windows.WindowsProbeTests.test_native_job_kills_running_synthetic_child) ... skipped 'requires native Windows'
+test_resume_failure_reaps_suspended_child (test_windows.WindowsProbeTests.test_resume_failure_reaps_suspended_child) ... skipped 'requires native Windows'
+test_unsupported_host_does_not_claim_job_success (test_windows.WindowsProbeTests.test_unsupported_host_does_not_claim_job_success) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 1.553s
+
+OK (skipped=4)

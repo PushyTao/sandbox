@@ -1,0 +1,12 @@
+test_existing_name_scan_does_not_reserve_future_name (test_m0_review.FilesystemCounterexamples.test_existing_name_scan_does_not_reserve_future_name) ... ok
+test_hardlink_bypasses_name_filter_and_copy_can_disclose_content (test_m0_review.FilesystemCounterexamples.test_hardlink_bypasses_name_filter_and_copy_can_disclose_content) ... ok
+test_resolved_path_does_not_pin_parent_identity (test_m0_review.FilesystemCounterexamples.test_resolved_path_does_not_pin_parent_identity) ... ok
+test_cli_rejects_workload_workspace_and_platform_overrides (test_m0_review.PublicBoundaryTests.test_cli_rejects_workload_workspace_and_platform_overrides) ... ok
+test_directory_symlink_cleanup_preserves_external_synthetic_sentinel (test_m0_review.TemporaryCleanupTests.test_directory_symlink_cleanup_preserves_external_synthetic_sentinel) ... ok
+test_assignment_failure_never_resumes_and_reaps_exact_process (test_m0_review.WindowsInitializationFailures.test_assignment_failure_never_resumes_and_reaps_exact_process) ... ok
+test_job_configuration_failure_never_creates_process (test_m0_review.WindowsInitializationFailures.test_job_configuration_failure_never_creates_process) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.040s
+
+OK

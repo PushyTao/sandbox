@@ -1,0 +1,28 @@
+{
+  "exit_code": 2,
+  "timed_out": false,
+  "timeout_seconds": 60,
+  "error": null,
+  "cleanup": {
+    "scope": "outer-windows-job",
+    "configured_before_create": true,
+    "assigned_before_resume": true,
+    "process_handles": [
+      {
+        "pid": 54044,
+        "exit_confirmed": true
+      }
+    ],
+    "errors": [],
+    "active_before_cleanup": 0,
+    "active_after_cleanup": 0,
+    "complete": true
+  },
+  "elapsed_seconds": 0.25,
+  "command": [
+    "python",
+    "-m",
+    "sandbox_probe"
+  ],
+  "expected_exit_code": 2
+}
