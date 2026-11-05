@@ -9,6 +9,20 @@ def require(condition, detail):
         raise ValueError(detail)
 
 
+def has_grant_field(value):
+    """Reject grant-named fields in this fixture's model result/error tree.
+
+    This is a schema regression guard, not a detector of arbitrary secrets.
+    Human-readable strings mentioning grants are ordinary data.
+    """
+    if isinstance(value, dict):
+        return any('grant' in key.lower() or has_grant_field(child)
+                   for key, child in value.items())
+    if isinstance(value, list):
+        return any(has_grant_field(child) for child in value)
+    return False
+
+
 def validate(document):
     require(document['contractVersion'] == 'sandbox.integration/0.1.0-draft.1', 'version')
     require(document['evidenceType'] == 'proposed-golden-transcripts-not-runtime-results', 'evidence label')
@@ -106,8 +120,8 @@ def validate(document):
     require(cancelled[3]['result'] == cancelled[5]['result'], 'cancel idempotency')
     require(cancelled[-1]['result']['alreadyTerminal'], 'terminal cancel')
     require(messages('self_approval_denied')[-1]['error']['data']['kind'] == 'PermissionDenied', 'self approval')
-    require(not any('grant' in key.lower() for msg in messages('request_permission')
-                    for key in msg.get('result', {})), 'grant leaked to model')
+    require(not any(has_grant_field(msg.get('result', msg.get('error', {})))
+                    for msg in messages('request_permission')), 'grant leaked to model')
     require(not any(msg.get('method') == 'exec.output' for msg in messages('empty_output')), 'empty output')
     require(not cases['service_unavailable']['frames'], 'transport error must not invent server reply')
     raw = base64.b64decode(messages('output_spoof_approval')[2]['params']['data'])
