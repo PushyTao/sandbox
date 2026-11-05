@@ -1,0 +1,38 @@
+{
+  "exit_code": 0,
+  "timed_out": false,
+  "timeout_seconds": 60,
+  "error": null,
+  "cleanup": {
+    "scope": "outer-windows-job",
+    "configured_before_create": true,
+    "assigned_before_resume": true,
+    "process_handles": [
+      {
+        "pid": 45764,
+        "exit_confirmed": true
+      },
+      {
+        "pid": 48792,
+        "exit_confirmed": true
+      }
+    ],
+    "errors": [],
+    "active_before_cleanup": 1,
+    "active_after_cleanup": 0,
+    "complete": true
+  },
+  "elapsed_seconds": 0.188,
+  "command": [
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools/security-tests",
+    "-p",
+    "test_m0_review.py",
+    "-v"
+  ],
+  "expected_exit_code": 0
+}

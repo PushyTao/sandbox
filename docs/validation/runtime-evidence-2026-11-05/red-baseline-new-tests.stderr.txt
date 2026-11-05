@@ -1,0 +1,30 @@
+test_descendant_query_failure_is_not_success_and_reaps_tree (test_windows.WindowsProbeTests) ... FAIL
+test_job_close_reaps_running_descendant (test_windows.WindowsProbeTests) ... FAIL
+test_job_never_claims_other_security_boundaries (test_windows.WindowsProbeTests) ... ok
+test_native_job_kills_running_synthetic_child (test_windows.WindowsProbeTests) ... ok
+test_resume_failure_reaps_suspended_child (test_windows.WindowsProbeTests) ... ok
+test_unsupported_host_does_not_claim_job_success (test_windows.WindowsProbeTests) ... ok
+
+======================================================================
+FAIL: test_descendant_query_failure_is_not_success_and_reaps_tree (test_windows.WindowsProbeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<source>\tools\m0\tests\test_windows.py", line 76, in test_descendant_query_failure_is_not_success_and_reaps_tree
+    self.assertEqual(job.status, 'fail', job.to_dict())
+AssertionError: 'pass' != 'fail'
+- pass
++ fail
+ : {'id': 'windows.job_lifecycle', 'status': 'pass', 'summary': 'Fixed synthetic child ran after Job assignment and terminated on Job close.', 'details': {'assigned_before_resume': True, 'running_before_close': True, 'terminated_after_close': True, 'pid': 41292}}
+
+======================================================================
+FAIL: test_job_close_reaps_running_descendant (test_windows.WindowsProbeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<source>\tools\m0\tests\test_windows.py", line 40, in test_job_close_reaps_running_descendant
+    self.assertTrue(job.details.get('descendant_in_job'), job.to_dict())
+AssertionError: None is not true : {'id': 'windows.job_lifecycle', 'status': 'pass', 'summary': 'Fixed synthetic child ran after Job assignment and terminated on Job close.', 'details': {'assigned_before_resume': True, 'running_before_close': True, 'terminated_after_close': True, 'pid': 32344}}
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.273s
+
+FAILED (failures=2)
