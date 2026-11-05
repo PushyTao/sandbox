@@ -1,5 +1,7 @@
 # M0：Codex / Claude Code 接入核验
 
+**2026-11-05 补充：** [架构候选对齐与 SESSION-01 裁决](architecture-alignment.md) 已整理；`sandbox.architecture/0.1.0-draft.1` 与下述旧夹具版本不兼容。本页工具能力证据仍限定于 2026-10-22 的固定版本，未延伸为当前最新版的兼容承诺。
+
 PUSH-7，核验日期 **2026-10-22**。结论：存在可研究的公开工具入口；当前仓库没有完成本地服务接入，也没有任一平台的端到端兼容或安全通过结论。优先保留宿主 Agent、把产品策略选中的工具交给同策略受限 worker；不能仅包 shell 或增加 MCP 就宣称覆盖全部工具。
 
 交付包括本页覆盖矩阵、[实验合同](experimental-contract.md)、[最小闭环与 SESSION-01](agent-loop-and-handoff.md)、[验证记录](validation.md)及固定 JSON-RPC 夹具。代码基线 `bb4e544f09cd12fb2521772944060c23cb7f6932`，本轮只新增 `docs/integration/` 和 `examples/protocol-fixtures/`。

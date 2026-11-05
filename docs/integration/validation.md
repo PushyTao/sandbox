@@ -1,5 +1,24 @@
 # PUSH-7 验证与交付边界
 
+## 2026-11-05 续交付
+
+当前工作基于 main `650e629`，在任务分支以 merge commit `cdd9798` 保留原接入提交 `c26fda2`、`612003f`；未改写它们，也未把任务分支合入 main。新增[架构对齐说明](architecture-alignment.md)，原 19 个 integration 版夹具不变，不作为 architecture 版的兼容测试。
+
+实际运行环境：Windows / AMD64；PowerShell `[Environment]::OSVersion.Version` 为 `10.0.26300.0`，Python `platform.platform()` 报 `Windows-10-10.0.26100-SP0`，两种查询值分别记录，不混作新的平台验证。Python `3.8.5`，Git `2.54.0.windows.1`，Node `v24.14.1`（本轮校验只需 Python 标准库）。
+
+| 本次命令（仓库根） | 结果 | 退出码 |
+|---|---|---:|
+| `python -B docs/integration/validate_fixtures.py` | 19 静态场景 / 59 帧通过 | 0 |
+| `python -B -m unittest discover -s docs/integration -p test_validate_fixtures.py -v`，修复前 | 7 测试中 3 失败：嵌套对象、数组和错误详情中的 grant 字段未拒绝 | 1 |
+| 同一 unittest 命令，修复后 | 7 测试通过：原例、诊断文本正例、8 个旧非法变体、4 个 grant 非法变体（共 12 个非法变体被拒绝） | 0 |
+| `git diff --check` | 无空白错误 | 0 |
+
+原交付包里的 8 项负向检查现已随代码纳入 `test_validate_fixtures.py`，不再依赖仓库外脚本才能复现。递归字段检查涵盖 permission 样例 result/error 中的对象和数组，不把普通文本提到 grant 当泄漏；它只防止这些固定样例出现 grant 命名字段，**不是任意秘密检测器、通用 JSON Schema 验证器或服务协议解析器**。
+
+本次没有启动 sandbox 服务或执行工具路由实验；真实 Windows/Linux/macOS 后端兼容、安全隔离、创建/审批竞态、清理、模型闭环均未验证。未重跑其它团队的探针，也未将其通过数计入本任务。下文为 2026-10-22 历史记录，其中“本轮”仅指该日期。
+
+## 2026-10-22 原交付记录
+
 日期：2026-10-22。实际环境：Windows NT `10.0.26300.0` / X64；Python `3.8.5`、Node `v24.14.1`、Git `2.54.0.windows.1`。只做版本、帮助、schema/源码及静态夹具验证，不运行模型，不安装/启动 sandbox 服务，不修改宿主安全设置。
 
 ## 已执行

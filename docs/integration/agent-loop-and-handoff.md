@@ -1,5 +1,7 @@
 # 最小 Agent 闭环及跨团队交接
 
+**2026-11-05 进展：** SESSION-01 已在 PUSH-3 候选中选择单 owner；创建断连、重试、角色与并发要求见[架构对齐](architecture-alignment.md)。下文是 2026-10-22 的原验收程序与提问记录，不代表新候选允许同一工作区多 session，也不表示该闭环已经执行。
+
 日期：2026-10-22。PUSH-7 只交付文档与固定实验夹具，没有 adapter 或可执行 sandbox service。以下是可验证的验收程序，不是已执行的集成测试。
 
 ## 三条路线的选择
@@ -60,6 +62,6 @@ raise SystemExit(0 if ok else 1)
 | A：单 owner，控制台为 observer/独立 approver（建议供评审） | A 断开即取消 X/撤销 grant；C 可见 closing/清理结果。只断 C 不影响 A。最贴合 M1，不隐式转移所有权 |
 | B：持久 environment owner/受管 lease | A 断开是否存活由经认证 lease 决定，需要续期、重连身份、持久状态、事件留存和 supervisor 崩溃合同；超出当前 M1 基线 |
 
-请架构师在 PUSH-3 协调 PUSH-8，明确 owner 的可信建立、观察者权限、审批 UI 断连时 pending 的取消/期限、owner 断连与审批竞态的线性化点。建议 closing 先撤销 pending/grants，迟到批准返回 SessionClosing，无新执行；取消结果通过可信审计让 C 可见。多个 Agent 共享环境建议使用不同 session，不凭同一目录推定隔离。
+原交接请求为请架构师在 PUSH-3 协调 PUSH-8，明确 owner 的可信建立、观察者权限、审批 UI 断连时 pending 的取消/期限、owner 断连与审批竞态的线性化点。上述候选现已明确：closing 使 pending 失效并撤销 grants，迟到批准返回 SessionClosing，无新执行；清理结果通过可信快照/审计让 C 可见。原先“多个 Agent 使用不同 session”的建议已收紧：同一登记工作区只能有一个活动 session，不能靠不同 session ID 推定隔离。
 
 本提案未添加 `session.attach` 或所有权转移公开接口。选择 B 前不实现后台/重连，选择 A 也必须经身份与多连接实际验证。
