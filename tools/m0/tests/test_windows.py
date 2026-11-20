@@ -31,6 +31,58 @@ class WindowsProbeTests(unittest.TestCase):
         self.assertTrue(job.details['assigned_before_resume'])
         self.assertGreater(job.details['pid'], 0)
 
+    @unittest.skipUnless(sys.platform == 'win32', 'requires native Windows')
+    def test_job_close_reaps_running_descendant(self):
+        # Removing descendant creation, membership verification or the wait must
+        # prevent a passing lifecycle observation. The probe pins a real handle.
+        job = self.module()._job_lifecycle()
+        self.assertEqual(job.status, 'pass', job.to_dict())
+        self.assertTrue(job.details.get('descendant_in_job'), job.to_dict())
+        self.assertTrue(job.details['descendant_running_before_close'])
+        self.assertTrue(job.details['descendant_terminated_after_close'])
+        self.assertTrue(job.details['descendant_cleanup_confirmed'])
+        self.assertIsInstance(job.details['descendant_exit_code'], int)
+        self.assertNotEqual(job.details['descendant_pid'], job.details['pid'])
+
+    @unittest.skipUnless(sys.platform == 'win32', 'requires native Windows')
+    def test_descendant_query_failure_is_not_success_and_reaps_tree(self):
+        import ctypes
+        from ctypes import wintypes
+
+        module = self.module()
+        kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+        kernel.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel.OpenProcess.restype = wintypes.HANDLE
+        kernel.DuplicateHandle.argtypes = [wintypes.HANDLE, wintypes.HANDLE,
+            wintypes.HANDLE, ctypes.POINTER(wintypes.HANDLE), wintypes.DWORD,
+            wintypes.BOOL, wintypes.DWORD]
+        kernel.DuplicateHandle.restype = wintypes.BOOL
+        kernel.GetCurrentProcess.restype = wintypes.HANDLE
+        retained = wintypes.HANDLE()
+
+        def fail_query(process, job, result):
+            # Keep an independent handle BEFORE cleanup, avoiding a reused PID
+            # or a later OpenProcess failure masquerading as proof of exit.
+            current = kernel.GetCurrentProcess()
+            self.assertTrue(kernel.DuplicateHandle(current, process, current,
+                ctypes.byref(retained), 0, False, 2))
+            ctypes.set_last_error(5)
+            return False
+
+        kernel.IsProcessInJob = Mock(side_effect=fail_query)
+        try:
+            with patch.object(module.ctypes, 'WinDLL', return_value=kernel):
+                job = module._job_lifecycle()
+            self.assertEqual(job.status, 'fail', job.to_dict())
+            self.assertEqual(job.details['error']['operation'], 'IsProcessInJob(descendant)')
+            self.assertTrue(retained.value, 'descendant must exist before injected failure')
+            self.assertEqual(kernel.WaitForSingleObject(retained, 0), 0,
+                             'probe returned before descendant cleanup')
+            self.assertNotIn('cleanup_errors', job.details)
+        finally:
+            if retained.value:
+                kernel.CloseHandle(retained)
+
     def test_job_never_claims_other_security_boundaries(self):
         observations = {item.id: item for item in self.module().probe()}
         for boundary in ('filesystem', 'token', 'network', 'ipc', 'descendants'):

@@ -1,0 +1,10 @@
+{
+  "ProductName": "Windows 10 Pro",
+  "DisplayVersion": "26H2",
+  "CurrentBuild": "26300",
+  "UBR": 9711,
+  "source": "HKLM SOFTWARE Microsoft Windows NT CurrentVersion",
+  "elevated_admin": false,
+  "baseline_sha": "c19b23585d64d20869adb9654cfbc1f013584d40",
+  "starting_head": "650e629f6047d057e5adb31304e56864ba8721de"
+}

@@ -11,6 +11,29 @@ import time
 from .report import Observation
 
 
+# Fixed synthetic payload only. Both processes self-expire; neither inherits the
+# controlling Job handle. Publish the PID atomically after the descendant runs.
+_DESCENDANT_CODE = """
+import os, pathlib, time
+pathlib.Path('descendant-ready.tmp').write_text(str(os.getpid()))
+pathlib.Path('descendant-ready.tmp').replace('descendant-ready')
+time.sleep(20)
+"""
+_CHILD_CODE = """
+import pathlib, subprocess, sys, time
+child = subprocess.Popen([sys.executable, '-I', '-S', '-c', {descendant!r}],
+    stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    close_fds=True, creationflags=0x08000000)
+pathlib.Path('ready').write_text('ready')
+try:
+    child.wait(timeout=20)
+finally:
+    if child.poll() is None:
+        child.kill()
+    child.wait(timeout=5)
+""".format(descendant=_DESCENDANT_CODE)
+
+
 def _job_lifecycle():
     kernel = ctypes.WinDLL('kernel32', use_last_error=True)
     size_t = ctypes.c_size_t
@@ -59,6 +82,10 @@ def _job_lifecycle():
         'ResumeThread': ([wintypes.HANDLE], wintypes.DWORD),
         'WaitForSingleObject': ([wintypes.HANDLE, wintypes.DWORD], wintypes.DWORD),
         'TerminateProcess': ([wintypes.HANDLE, wintypes.UINT], wintypes.BOOL),
+        'OpenProcess': ([wintypes.DWORD, wintypes.BOOL, wintypes.DWORD], wintypes.HANDLE),
+        'IsProcessInJob': ([wintypes.HANDLE, wintypes.HANDLE,
+                            ctypes.POINTER(wintypes.BOOL)], wintypes.BOOL),
+        'GetExitCodeProcess': ([wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)], wintypes.BOOL),
         'CloseHandle': ([wintypes.HANDLE], wintypes.BOOL),
     }
     for name, (arguments, result) in signatures.items():
@@ -72,9 +99,13 @@ def _job_lifecycle():
 
     job = None
     temporary = None
+    descendant = None
     process = ProcessInfo()
     details = {'assigned_before_resume': False, 'running_before_close': False,
-               'terminated_after_close': False}
+               'terminated_after_close': False, 'descendant_in_job': False,
+               'descendant_running_before_close': False,
+               'descendant_terminated_after_close': False,
+               'descendant_cleanup_confirmed': False}
     status, summary = 'fail', 'Job lifecycle experiment did not complete.'
     cleanup_errors = []
     try:
@@ -86,11 +117,10 @@ def _job_lifecycle():
         temporary = tempfile.TemporaryDirectory(prefix='m0-job-')
         directory = temporary.name
         marker = pathlib.Path(directory) / 'ready'
-        # No workload input; -I -S disables user startup code. The child exits on its
-        # own in 20 seconds as a final safety bound if cleanup cannot terminate it.
-        code = "import pathlib,time;pathlib.Path('ready').write_text('ready');time.sleep(20)"
+        descendant_marker = pathlib.Path(directory) / 'descendant-ready'
+        # No workload input; -I -S disables user startup code.
         command = ctypes.create_unicode_buffer(subprocess.list2cmdline(
-            [sys.executable, '-I', '-S', '-c', code]))
+            [sys.executable, '-I', '-S', '-c', _CHILD_CODE]))
         startup = StartupInfo()
         startup.cb = ctypes.sizeof(startup)
         check(kernel.CreateProcessW(sys.executable, command, None, None, False,
@@ -102,18 +132,39 @@ def _job_lifecycle():
         if kernel.ResumeThread(process.thread) == 0xFFFFFFFF:
             raise OSError(ctypes.get_last_error(), 'ResumeThread')
         deadline = time.monotonic() + 5
-        while not marker.exists() and time.monotonic() < deadline:
+        while not (marker.exists() and descendant_marker.exists()) and time.monotonic() < deadline:
             if kernel.WaitForSingleObject(process.process, 0) != 258:
                 break
             time.sleep(0.02)
         details['running_before_close'] = (
             marker.exists() and kernel.WaitForSingleObject(process.process, 0) == 258)
+        if not descendant_marker.exists():
+            raise OSError(0, 'descendant readiness timeout')
+        # This PID comes from our fixed payload in its disposable directory.
+        # Pin the process before closing the Job; a later PID lookup is not exit
+        # evidence. Membership is checked against THIS Job, not any ambient Job.
+        details['descendant_pid'] = int(descendant_marker.read_text())
+        descendant = check(kernel.OpenProcess(0x100000 | 0x1000 | 0x1, False,
+            details['descendant_pid']), 'OpenProcess(descendant)')
+        member = wintypes.BOOL()
+        check(kernel.IsProcessInJob(descendant, job, ctypes.byref(member)),
+              'IsProcessInJob(descendant)')
+        details['descendant_in_job'] = bool(member.value)
+        details['descendant_running_before_close'] = kernel.WaitForSingleObject(descendant, 0) == 258
         check(kernel.CloseHandle(job), 'CloseHandle(job)')
         job = None
         details['terminated_after_close'] = kernel.WaitForSingleObject(process.process, 5000) == 0
-        if details['running_before_close'] and details['terminated_after_close']:
+        details['descendant_terminated_after_close'] = kernel.WaitForSingleObject(descendant, 5000) == 0
+        if details['descendant_terminated_after_close']:
+            exit_code = wintypes.DWORD()
+            check(kernel.GetExitCodeProcess(descendant, ctypes.byref(exit_code)),
+                  'GetExitCodeProcess(descendant)')
+            details['descendant_exit_code'] = exit_code.value
+        if all(details[key] for key in ('running_before_close', 'terminated_after_close',
+                'descendant_in_job', 'descendant_running_before_close',
+                'descendant_terminated_after_close')):
             status = 'pass'
-            summary = 'Fixed synthetic child ran after Job assignment and terminated on Job close.'
+            summary = 'Fixed child and its observed descendant ran in the Job and terminated on Job close.'
     except OSError as error:
         # Record operation and code only, never inherited environment or arbitrary output.
         details['error'] = {'operation': error.strerror, 'code': error.errno}
@@ -135,6 +186,15 @@ def _job_lifecycle():
                 cleanup_errors.append('CloseHandle(process)')
         if process.thread and not kernel.CloseHandle(process.thread):
             cleanup_errors.append('CloseHandle(thread)')
+        if descendant:
+            if kernel.WaitForSingleObject(descendant, 0) != 0 and details['descendant_in_job']:
+                # Only terminate the exact handle whose membership was verified.
+                kernel.TerminateProcess(descendant, 1)
+            details['descendant_cleanup_confirmed'] = kernel.WaitForSingleObject(descendant, 5000) == 0
+            if not details['descendant_cleanup_confirmed']:
+                cleanup_errors.append('descendant termination not confirmed')
+            if not kernel.CloseHandle(descendant):
+                cleanup_errors.append('CloseHandle(descendant)')
         if temporary is not None:
             try:
                 temporary.cleanup()
@@ -159,7 +219,8 @@ def probe():
         ('token', 'Child uses the current identity; restricted tokens are not tested.'),
         ('network', 'No network deny policy is installed or tested.'),
         ('ipc', 'No host IPC isolation is installed or tested.'),
-        ('descendants', 'Descendant containment, host-agent escape and supervisor crash are not tested.'),
+        ('descendants', 'Only one fixed CreateProcess descendant is tested; general containment, '
+                        'host-agent escape and supervisor crash remain unverified.'),
     ):
         observations.append(Observation('windows.' + boundary, 'unverified', summary))
     return observations

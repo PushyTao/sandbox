@@ -1,0 +1,45 @@
+{
+  "wsl-suite": {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/m0/tests",
+      "-v"
+    ],
+    "exit_code": 0,
+    "timeout_seconds": 60
+  },
+  "wsl-probe": {
+    "command": [
+      "python3",
+      "-m",
+      "sandbox_probe"
+    ],
+    "exit_code": 1,
+    "timeout_seconds": 60
+  },
+  "environment": {
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.14.4",
+    "os_release": {
+      "NAME": "Ubuntu",
+      "ID": "ubuntu",
+      "PRETTY_NAME": "Ubuntu 26.04 LTS",
+      "VERSION_ID": "26.04",
+      "VERSION": "26.04 (Resolute Raccoon)",
+      "VERSION_CODENAME": "resolute",
+      "ID_LIKE": "debian",
+      "HOME_URL": "https://www.ubuntu.com/",
+      "SUPPORT_URL": "https://help.ubuntu.com/",
+      "BUG_REPORT_URL": "https://bugs.launchpad.net/ubuntu/",
+      "PRIVACY_POLICY_URL": "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
+      "UBUNTU_CODENAME": "resolute",
+      "LOGO": "ubuntu-logo"
+    },
+    "bwrap": "bubblewrap 0.11.1",
+    "filesystem": "v9fs"
+  }
+}
